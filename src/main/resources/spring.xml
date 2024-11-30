@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+
+    <!--扫描包-->
+    <context:component-scan base-package="cn.tulingxueyuan"></context:component-scan>
+
+    <!--配置第三方bean-->
+       <bean class="com.alibaba.druid.pool.DruidDataSource" id="dataSource">
+           <property name="username" value="${mysql.username}"></property>
+           <property name="password" value="${mysql.password}"></property>
+           <property name="url"  value="${mysql.url}"></property>
+           <property name="driverClassName" value="${mysql.driverClassName}"></property>
+       </bean>
+
+    <!--引入外部属性资源文件-->
+    <context:property-placeholder location="db.properties"></context:property-placeholder>
+
+    <!--配置JdbcTemplate Bean组件-->
+    <bean class="org.springframework.jdbc.core.JdbcTemplate" id="jdbcTemplate">
+        <property name="dataSource" ref="dataSource" ></property>
+    </bean>
+
+    <bean class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate" id="namedParameterJdbcTemplate">
+        <constructor-arg type="javax.sql.DataSource" ref="dataSource"/>
+    </bean>
+
+    <!--配置事务管理器-->
+    <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="transactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+    <!--基于注解方式的事务，开启事务的注解驱动
+    如果基于注解的和xml的事务都配置了会以注解的优先
+    -->
+    <tx:annotation-driven transaction-manager="transactionManager"></tx:annotation-driven>
+
+
+    <!--用于声明事务切入的所有方法-->
+
+<!--    <aop:config>-->
+<!--        <aop:pointcut id="transactionCut" expression="execution(* cn.tulingxueyuan.service.impl.*.*(..))"/>-->
+<!--        <aop:advisor advice-ref="myAdvice" pointcut-ref="transactionCut"/>-->
+<!--    </aop:config>-->
+
+<!--   &lt;!&ndash;用来明确切点匹配到的方法哪些方法需要使用事务&ndash;&gt;-->
+<!--    <tx:advice id="myAdvice" transaction-manager="transactionManager">-->
+<!--        <tx:attributes>-->
+<!--            &lt;!&ndash;可以使用通配符&ndash;&gt;-->
+<!--            <tx:method name="add*"/>-->
+<!--            <tx:method name="update*"/>-->
+<!--            <tx:method name="delete*"/>-->
+<!--            <tx:method name="get*" read-only="true" propagation="SUPPORTS"></tx:method>-->
+<!--            <tx:method name="query*" read-only="true"></tx:method>-->
+<!--        </tx:attributes>-->
+<!--    </tx:advice>-->
+
+</beans>
