@@ -18,7 +18,7 @@ public class LogServiceImpl implements ILogService {
     IUserDao userDao;
 
     @Override
-    // 如果事务传播行为是挂起事务  需要将父事务方法和子事务方法写在不同的类里面
+    // 如果事务传播行为是挂起事务, 需要将父事务方法和子事务方法写在不同的类里面
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void log() {
         userDao.sub();

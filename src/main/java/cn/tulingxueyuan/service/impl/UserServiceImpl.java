@@ -47,6 +47,7 @@ public class UserServiceImpl implements IUserService {
    * 扣钱
    */
 //  @Transactional(propagation = Propagation.SUPPORTS)   // 只适用于该事务方法是一个查询
+  @Override
   @Transactional(timeout = 2)
   public void sub() {
 
@@ -87,6 +88,7 @@ public class UserServiceImpl implements IUserService {
 
 //  @Transactional(rollbackFor = {Exception.class})  // 扩大异常检测范围
   @Transactional(noRollbackFor = {RuntimeException.class})
+  @Override
   public void tranException() throws Exception {
     userDao.sub();
     throw new RuntimeException("测试");
